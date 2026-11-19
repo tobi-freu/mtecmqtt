@@ -2,7 +2,7 @@ name: "MTECmqtt Bridge"
 description: "Liest alle verifizierten M-TEC Energy Butler Register über Modbus RTU-over-TCP aus (inkl. Fault-Bitmasken, Firmware, Shadow Scan, BMS-Limits & Diagnosen) und publiziert per MQTT"
 url: "https://github.com/tobi-freu/mtecmqtt"
 slug: "mtecmqtt"
-version: "3.1.0"
+version: "3.1.1"
 # Nach dem ersten öffentlichen GHCR-Release einkommentieren, um fertige Multi-Arch-Images zu ziehen:
 # image: "ghcr.io/tobi-freu/mtecmqtt"
 init: false
