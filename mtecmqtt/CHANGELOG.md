@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.1.1
+
+### Behoben
+- **Home Assistant App-Linter-Kompatibilität:** Redundante Standardwerte (`boot: auto`, `startup: application`) aus `config.yaml` entfernt (Verhalten im Supervisor bleibt unverändert).
+- **Versions-Synchronisation:** `APP_VERSION` in `mtec_runner.py` sowie Dokumentation auf `3.1.1` angeglichen.
+
 ## 3.1.0
 
 ### Neu

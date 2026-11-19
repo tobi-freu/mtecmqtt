@@ -6,8 +6,6 @@ version: "3.1.1"
 # Nach dem ersten öffentlichen GHCR-Release einkommentieren, um fertige Multi-Arch-Images zu ziehen:
 # image: "ghcr.io/tobi-freu/mtecmqtt"
 init: false
-startup: application
-boot: auto
 services:
   - "mqtt:want"
 arch:

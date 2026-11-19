@@ -8,7 +8,7 @@ Dieses Repository stellt die Home Assistant App **MTECmqtt Bridge** (`mtecmqtt`)
 
 ## Enthaltene App
 
-- **[MTECmqtt Bridge (`mtecmqtt/`)](mtecmqtt/README.md)** – Aktuelle Version: `3.1.0` (`amd64` & `aarch64`)
+- **[MTECmqtt Bridge (`mtecmqtt/`)](mtecmqtt/README.md)** – Aktuelle Version: `3.1.1` (`amd64` & `aarch64`)
   - **Vollständige Read-Only Register-Abdeckung (`173` HA-Entitäten):** Geräte-Identität, Firmware (`device.sw_version` inkl. OTA-Erkennung), aktive Fault-/ARM-/BMS-Bitmasken, aggregierter `binary_sensor.inverter_problem`, DC-Bus, Zähler-/Energiezähler, Shadow Scan (`25020`), Backup-/Peak-Shaving-/EMS-Parameter, BMS-Limits und Zeitplan-Zusammenfassung (`53006–53048`).
   - **Modbus Stability Guard für den M-TEC WLAN-Dongle:** Inter-Cluster- & Inter-Group-Pacing (`50 ms` / `250 ms`), TCP-Keepalive, sofortiger Socket-Reset bei Lesefehlern, `MODBUS_CLOSE_AFTER_CYCLE` (Ephemeral Socket Mode), Self-Healing-Backoff und Watchdog-Exit.
   - **MQTT & HA Discovery Guard:** Echtes `retain=True` für State- & Attribut-Topics, Sofort-Refresh bei Home-Assistant-Birth-Message und Schutz vor destruktivem `unregister` beim Container-Stopp.

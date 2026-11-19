@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-MTECmqtt Bridge Runner & Stability Layer (v3.1.0)
+MTECmqtt Bridge Runner & Stability Layer (v3.1.1)
 -------------------------------------------------
 Kapselt croedel/MTECmqtt für maximale Stabilität und vollständige Register-Abdeckung
 im Home Assistant App/Add-on-Betrieb:
@@ -44,7 +44,7 @@ import yaml
 # ============================================================================
 # Globale Laufzeit-Steuerung & Konstanten
 # ============================================================================
-APP_VERSION = "3.1.0"
+APP_VERSION = "3.1.1"
 FORMAT = "%(asctime)s [%(levelname)s] %(message)s"
 logging.basicConfig(format=FORMAT, datefmt="%Y-%m-%d %H:%M:%S", level=logging.INFO)
 
