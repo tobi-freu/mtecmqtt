@@ -1,0 +1,52 @@
+name: "MTECmqtt Bridge"
+description: "Liest M-TEC Energy Butler Register über Modbus RTU-over-TCP aus und publiziert per MQTT (inkl. Connection-Guard & Retain-Fix)"
+slug: "mtecmqtt"
+version: "3.0.0"
+init: false
+startup: application
+boot: auto
+arch:
+  - aarch64
+  - amd64
+options:
+  modbus:
+    MODBUS_IP: "192.168.178.47"
+    MODBUS_PORT: 502
+    MODBUS_SLAVE: 252
+    MODBUS_TIMEOUT: 8
+    MODBUS_RETRIES: 2
+    MODBUS_CLOSE_AFTER_CYCLE: true
+  mqtt:
+    MQTT_SERVER: "core-mosquitto"
+    MQTT_PORT: 1883
+    MQTT_LOGIN: "mtec"
+    MQTT_PASSWORD: "dein_passwort"
+  refresh:
+    REFRESH_NOW: 30
+    REFRESH_ALL_NOW_GROUPS: true
+    REFRESH_DAY: 300
+    REFRESH_TOTAL: 600
+    REFRESH_CONFIG: 3600
+  advanced:
+    DEBUG: false
+schema:
+  modbus:
+    MODBUS_IP: str
+    MODBUS_PORT: port
+    MODBUS_SLAVE: int(1,255)
+    MODBUS_TIMEOUT: int(3,30)
+    MODBUS_RETRIES: int(0,5)
+    MODBUS_CLOSE_AFTER_CYCLE: bool
+  mqtt:
+    MQTT_SERVER: str
+    MQTT_PORT: port
+    MQTT_LOGIN: str
+    MQTT_PASSWORD: password
+  refresh:
+    REFRESH_NOW: int(10,300)
+    REFRESH_ALL_NOW_GROUPS: bool
+    REFRESH_DAY: int(60,3600)
+    REFRESH_TOTAL: int(300,86400)
+    REFRESH_CONFIG: int(300,86400)
+  advanced:
+    DEBUG: bool
