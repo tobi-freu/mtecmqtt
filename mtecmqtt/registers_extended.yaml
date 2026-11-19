@@ -1,0 +1,1265 @@
+---
+# Extended Read-Only Register Catalog for M-TEC Energy Butler (Wattsonic / Solinteg Gen3)
+# Verified against M-TEC Energy Butler 20kW-3P-3G40 (FW V1.0.0.1-27.53.5.0, Slave 252, FC 0x03)
+#
+# Invariants:
+# - Strictly Read-Only (writable: false).
+# - All new / enriched entities are registered in HA under entity_category: diagnostic
+#   and enabled by default (no enabled_by_default: false).
+# - Never alter unique_id, state_topic, name, or formatting of the 81 existing HA entities.
+
+# ----------------------------------------------------------------------------
+# 1. Enrichments for existing upstream registers that lacked HA discovery
+# ----------------------------------------------------------------------------
+"api-date":
+  merge: true
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:clock-outline
+
+"10000":
+  merge: true
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:identifier
+
+"10011":
+  merge: true
+  decoder: fw_master_dsp
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:chip
+  hass_json_attributes: true
+
+"10100":
+  merge: true
+  decoder: rtc_iso
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:calendar-clock
+
+"33002":
+  merge: true
+  mqtt: bms_status
+  group: now-battery
+  writable: false
+  decoder: enum_u16
+  enum_map:
+    0: "Init"
+    1: "Self-check"
+    2: "Normal"
+    3: "Warning"
+    4: "Fault"
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:battery-heart-variant
+  hass_json_attributes: true
+  problem_enum_values:
+    - 3
+    - 4
+
+# ----------------------------------------------------------------------------
+# 2. Device Identity, Firmware & Grid Safety Standard (group: config)
+# ----------------------------------------------------------------------------
+"10008":
+  name: Equipment info
+  length: 1
+  type: U16
+  writable: false
+  decoder: equipment_model
+  mqtt: equipment_info
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:solar-power
+  hass_json_attributes: true
+
+"10009":
+  name: Output mode
+  length: 1
+  type: U16
+  writable: false
+  mqtt: output_mode
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:cog-outline
+
+"10010":
+  name: Protocol version
+  length: 1
+  type: U16
+  writable: false
+  mqtt: protocol_version
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:protocol
+
+"10015":
+  name: Firmware safety version
+  length: 1
+  type: U16
+  writable: false
+  decoder: u16_ver
+  mqtt: firmware_safety_version
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:shield-check-outline
+  hass_json_attributes: true
+
+"10104":
+  name: Grid safety standard
+  length: 1
+  type: U16
+  writable: false
+  decoder: grid_standard
+  mqtt: grid_safety_standard
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:transmission-tower
+  hass_json_attributes: true
+
+# ----------------------------------------------------------------------------
+# 3. Operation Flags & Active Inverter Fault Bitmasks (group: now-base)
+# ----------------------------------------------------------------------------
+"10110":
+  name: Inverter operation flags
+  length: 2
+  type: U32
+  writable: false
+  decoder: bitmask_u32
+  bitmask: operation_flags
+  empty_label: Normal
+  mqtt: operation_flags
+  group: now-base
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:information-outline
+  hass_json_attributes: true
+  problem_flag: false
+
+"10112":
+  name: Inverter fault flag 1
+  length: 2
+  type: U32
+  writable: false
+  decoder: bitmask_u32
+  bitmask: fault_flag_1
+  mqtt: fault_flag_1
+  group: now-base
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:alert-circle-outline
+  hass_json_attributes: true
+  problem_flag: true
+
+"10114":
+  name: Inverter fault flag 2
+  length: 2
+  type: U32
+  writable: false
+  decoder: bitmask_u32
+  bitmask: fault_flag_2
+  mqtt: fault_flag_2
+  group: now-base
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:alert-circle-outline
+  hass_json_attributes: true
+  problem_flag: true
+
+"10116":
+  name: Inverter fault flag ext 1
+  length: 2
+  type: U32
+  writable: false
+  decoder: bitmask_u32
+  bitmask: fault_flag_3
+  mqtt: fault_flag_ext_1
+  group: now-base
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:alert-circle-outline
+  hass_json_attributes: true
+  problem_flag: true
+
+"10118":
+  name: Inverter fault flag ext 2
+  length: 2
+  type: U32
+  writable: false
+  decoder: bitmask_u32
+  bitmask: raw_u32
+  mqtt: fault_flag_ext_2
+  group: now-base
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:alert-circle-outline
+  hass_json_attributes: true
+  problem_flag: true
+
+"10120":
+  name: Inverter fault flag 3
+  length: 2
+  type: U32
+  writable: false
+  decoder: bitmask_u32
+  bitmask: fault_flag_3
+  mqtt: fault_flag_3
+  group: now-base
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:alert-circle-outline
+  hass_json_attributes: true
+  problem_flag: true
+
+"10122":
+  name: Inverter fault flag ext 3
+  length: 2
+  type: U32
+  writable: false
+  decoder: bitmask_u32
+  bitmask: raw_u32
+  mqtt: fault_flag_ext_3
+  group: now-base
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:alert-circle-outline
+  hass_json_attributes: true
+  problem_flag: true
+
+"10124":
+  name: Inverter status flag 10124
+  length: 1
+  type: U16
+  writable: false
+  mqtt: inverter_status_raw_10124
+  group: now-base
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:code-braces
+  problem_flag: false
+
+"inverter-problem":
+  name: Inverter problem
+  writable: false
+  mqtt: inverter_problem
+  group: now-base
+  hass_component_type: binary_sensor
+  hass_device_class: problem
+  hass_payload_on: "ON"
+  hass_payload_off: "OFF"
+  hass_entity_category: diagnostic
+  hass_json_attributes: true
+
+# ----------------------------------------------------------------------------
+# 4. Meter Totals (group: now-grid)
+# ----------------------------------------------------------------------------
+"11002":
+  name: Meter grid export total
+  length: 2
+  type: U32
+  unit: kWh
+  scale: 100
+  writable: false
+  mqtt: meter_grid_export_total
+  group: now-grid
+  hass_component_type: sensor
+  hass_device_class: energy
+  hass_state_class: total_increasing
+  hass_value_template: "{{ value | round(2) }}"
+  hass_entity_category: diagnostic
+  hass_icon: mdi:transmission-tower-export
+
+"11004":
+  name: Meter grid import total
+  length: 2
+  type: U32
+  unit: kWh
+  scale: 100
+  writable: false
+  mqtt: meter_grid_import_total
+  group: now-grid
+  hass_component_type: sensor
+  hass_device_class: energy
+  hass_state_class: total_increasing
+  hass_value_template: "{{ value | round(2) }}"
+  hass_entity_category: diagnostic
+  hass_icon: mdi:transmission-tower-import
+
+# ----------------------------------------------------------------------------
+# 5. DC Bus, ARM Faults & AC Phase Sum (group: now-inverter)
+# ----------------------------------------------------------------------------
+"11036":
+  name: DC bus voltage
+  length: 1
+  type: U16
+  unit: V
+  scale: 10
+  writable: false
+  mqtt: dc_bus_voltage
+  group: now-inverter
+  hass_component_type: sensor
+  hass_device_class: voltage
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+
+"11037":
+  name: DC bus half voltage
+  length: 1
+  type: U16
+  unit: V
+  scale: 10
+  writable: false
+  mqtt: dc_bus_half_voltage
+  group: now-inverter
+  hass_component_type: sensor
+  hass_device_class: voltage
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+
+"18000":
+  name: ARM fault flag 1
+  length: 2
+  type: U32
+  writable: false
+  decoder: bitmask_u32
+  bitmask: arm_fault_flag_1
+  mqtt: arm_fault_flag_1
+  group: now-inverter
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:alert-circle-outline
+  hass_json_attributes: true
+  problem_flag: true
+
+"18002":
+  name: ARM fault ext 1
+  length: 2
+  type: U32
+  writable: false
+  decoder: bitmask_u32
+  bitmask: raw_u32
+  mqtt: arm_fault_ext_1
+  group: now-inverter
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:alert-circle-outline
+  hass_json_attributes: true
+  problem_flag: true
+
+"18004":
+  name: ARM fault flag 2
+  length: 2
+  type: U32
+  writable: false
+  decoder: bitmask_u32
+  bitmask: arm_fault_flag_2
+  mqtt: arm_fault_flag_2
+  group: now-inverter
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:alert-circle-outline
+  hass_json_attributes: true
+  problem_flag: true
+
+"18006":
+  name: ARM fault ext 2
+  length: 2
+  type: U32
+  writable: false
+  decoder: bitmask_u32
+  bitmask: raw_u32
+  mqtt: arm_fault_ext_2
+  group: now-inverter
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:alert-circle-outline
+  hass_json_attributes: true
+  problem_flag: true
+
+"18008":
+  name: ARM fault ext 3
+  length: 2
+  type: U32
+  writable: false
+  decoder: bitmask_u32
+  bitmask: raw_u32
+  mqtt: arm_fault_ext_3
+  group: now-inverter
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:alert-circle-outline
+  hass_json_attributes: true
+  problem_flag: true
+
+"18010":
+  name: ARM fault ext 4
+  length: 2
+  type: U32
+  writable: false
+  decoder: bitmask_u32
+  bitmask: raw_u32
+  mqtt: arm_fault_ext_4
+  group: now-inverter
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:alert-circle-outline
+  hass_json_attributes: true
+  problem_flag: true
+
+"inverter-ac-power-phase-sum":
+  name: Inverter AC power phase sum
+  unit: W
+  writable: false
+  mqtt: inverter_ac_power_phase_sum
+  group: now-inverter
+  hass_component_type: sensor
+  hass_device_class: power
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(0) }}"
+  hass_entity_category: diagnostic
+
+# ----------------------------------------------------------------------------
+# 6. Daily & Total Energy Counters (group: day / group: total)
+# ----------------------------------------------------------------------------
+"11018":
+  name: AC energy generated (day)
+  length: 2
+  type: U32
+  unit: kWh
+  scale: 10
+  writable: false
+  mqtt: ac_energy_generated_day
+  group: day
+  hass_component_type: sensor
+  hass_device_class: energy
+  hass_state_class: total_increasing
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+
+"31006":
+  name: Loading energy (day)
+  length: 1
+  type: U16
+  unit: kWh
+  scale: 10
+  writable: false
+  mqtt: loading_energy_day
+  group: day
+  hass_component_type: sensor
+  hass_device_class: energy
+  hass_state_class: total_increasing
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+
+"31008":
+  name: Grid purchased energy inverter side (day)
+  length: 1
+  type: U16
+  unit: kWh
+  scale: 10
+  writable: false
+  mqtt: grid_purchase_inverter_day
+  group: day
+  hass_component_type: sensor
+  hass_device_class: energy
+  hass_state_class: total_increasing
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+
+"11020":
+  name: AC energy generated (total)
+  length: 2
+  type: U32
+  unit: kWh
+  scale: 10
+  writable: false
+  mqtt: ac_energy_generated_total
+  group: total
+  hass_component_type: sensor
+  hass_device_class: energy
+  hass_state_class: total_increasing
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+
+"31114":
+  name: Loading energy consumed at grid side (total)
+  length: 2
+  type: U32
+  unit: kWh
+  scale: 10
+  writable: false
+  mqtt: loading_energy_total
+  group: total
+  hass_component_type: sensor
+  hass_device_class: energy
+  hass_state_class: total_increasing
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+
+"31118":
+  name: Grid purchased energy inverter side (total)
+  length: 2
+  type: U32
+  unit: kWh
+  scale: 10
+  writable: false
+  mqtt: grid_purchase_inverter_total
+  group: total
+  hass_component_type: sensor
+  hass_device_class: energy
+  hass_state_class: total_increasing
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+
+# ----------------------------------------------------------------------------
+# 7. Battery System Metadata (group: config, 32000-32006)
+# ----------------------------------------------------------------------------
+"32000":
+  name: Battery type
+  length: 1
+  type: U16
+  writable: false
+  decoder: battery_type
+  mqtt: battery_type
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:battery
+  hass_json_attributes: true
+
+"32001":
+  name: Battery strings
+  length: 1
+  type: U16
+  writable: false
+  mqtt: battery_strings
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:battery-sync
+
+"32002":
+  name: Battery protocol
+  length: 1
+  type: U16
+  writable: false
+  mqtt: battery_protocol
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:protocol
+
+"32003":
+  name: Battery firmware version
+  length: 1
+  type: U16
+  writable: false
+  decoder: u16_ver
+  mqtt: battery_sw_version
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:chip
+  hass_json_attributes: true
+
+"32004":
+  name: Battery hardware version
+  length: 1
+  type: U16
+  writable: false
+  decoder: u16_ver
+  mqtt: battery_hw_version
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:memory
+  hass_json_attributes: true
+
+"32005":
+  name: BMS rated charge current max
+  length: 1
+  type: U16
+  unit: A
+  scale: 10
+  writable: false
+  mqtt: bms_charge_imax_rated
+  group: config
+  hass_component_type: sensor
+  hass_device_class: current
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+
+"32006":
+  name: BMS rated discharge current max
+  length: 1
+  type: U16
+  unit: A
+  scale: 10
+  writable: false
+  mqtt: bms_discharge_imax_rated
+  group: config
+  hass_component_type: sensor
+  hass_device_class: current
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+
+# ----------------------------------------------------------------------------
+# 8. BMS Cell IDs, Errors, Warnings & Active Limits (group: now-battery)
+# ----------------------------------------------------------------------------
+"33008":
+  name: Battery cell temperature max. ID
+  length: 1
+  type: U16
+  writable: false
+  mqtt: battery_cell_t_max_id
+  group: now-battery
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:identifier
+
+"33010":
+  name: Battery cell temperature min. ID
+  length: 1
+  type: U16
+  writable: false
+  mqtt: battery_cell_t_min_id
+  group: now-battery
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:identifier
+
+"33012":
+  name: Battery cell voltage max. ID
+  length: 1
+  type: U16
+  writable: false
+  mqtt: battery_cell_v_max_id
+  group: now-battery
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:identifier
+
+"33014":
+  name: Battery cell voltage min. ID
+  length: 1
+  type: U16
+  writable: false
+  mqtt: battery_cell_v_min_id
+  group: now-battery
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:identifier
+
+"33016":
+  name: BMS error code
+  length: 2
+  type: U32
+  writable: false
+  decoder: bitmask_u32
+  bitmask: bms_error_code
+  mqtt: bms_error_code
+  group: now-battery
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:battery-alert-variant-outline
+  hass_json_attributes: true
+  problem_flag: true
+
+"33018":
+  name: BMS warning code
+  length: 2
+  type: U32
+  writable: false
+  decoder: bitmask_u32
+  bitmask: bms_warning_code
+  mqtt: bms_warning_code
+  group: now-battery
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:battery-alert
+  hass_json_attributes: true
+  problem_flag: true
+
+"33020":
+  name: BMS max charge voltage
+  length: 1
+  type: U16
+  unit: V
+  scale: 10
+  writable: false
+  mqtt: bms_max_charge_voltage
+  group: now-battery
+  hass_component_type: sensor
+  hass_device_class: voltage
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+
+"33021":
+  name: BMS max charge current
+  length: 1
+  type: U16
+  unit: A
+  scale: 10
+  writable: false
+  mqtt: bms_max_charge_current
+  group: now-battery
+  hass_component_type: sensor
+  hass_device_class: current
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+
+"33022":
+  name: BMS min discharge voltage
+  length: 1
+  type: U16
+  unit: V
+  scale: 10
+  writable: false
+  mqtt: bms_min_discharge_voltage
+  group: now-battery
+  hass_component_type: sensor
+  hass_device_class: voltage
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+
+"33023":
+  name: BMS max discharge current
+  length: 1
+  type: U16
+  unit: A
+  scale: 10
+  writable: false
+  mqtt: bms_max_discharge_current
+  group: now-battery
+  hass_component_type: sensor
+  hass_device_class: current
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+
+# ----------------------------------------------------------------------------
+# 9. Protection, Shadow Scan, Backup, Peak Shaving, EMS & Schedule (group: config)
+# ----------------------------------------------------------------------------
+"25000":
+  name: Grid standard setting
+  length: 1
+  type: U16
+  writable: false
+  decoder: grid_standard
+  mqtt: grid_standard_setting
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:transmission-tower
+  hass_json_attributes: true
+
+"25001":
+  name: Startup voltage threshold
+  length: 1
+  type: U16
+  unit: V
+  scale: 10
+  writable: false
+  mqtt: startup_voltage_threshold
+  group: config
+  hass_component_type: sensor
+  hass_device_class: voltage
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+
+"25002":
+  name: Grid reconnect delay
+  length: 1
+  type: U16
+  unit: s
+  writable: false
+  mqtt: grid_reconnect_delay
+  group: config
+  hass_component_type: sensor
+  hass_device_class: duration
+  hass_state_class: measurement
+  hass_entity_category: diagnostic
+
+"25003":
+  name: Active power limit
+  length: 1
+  type: U16
+  unit: "%"
+  writable: false
+  mqtt: active_power_limit
+  group: config
+  hass_component_type: sensor
+  hass_state_class: measurement
+  hass_entity_category: diagnostic
+  hass_icon: mdi:gauge
+
+"25005":
+  name: Config register 25005
+  length: 1
+  type: U16
+  writable: false
+  mqtt: config_raw_25005
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:code-braces
+
+"25006":
+  name: Config register 25006
+  length: 1
+  type: U16
+  writable: false
+  mqtt: config_raw_25006
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:code-braces
+
+"25007":
+  name: Config register 25007
+  length: 1
+  type: U16
+  writable: false
+  mqtt: config_raw_25007
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:code-braces
+
+"25008":
+  name: Inverter control state
+  length: 1
+  type: U16
+  writable: false
+  decoder: hex_u16
+  mqtt: inverter_control_state
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:power-settings
+  hass_json_attributes: true
+
+"25014":
+  name: Config register 25014
+  length: 1
+  type: U16
+  writable: false
+  mqtt: config_raw_25014
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:code-braces
+
+"25015":
+  name: Config register 25015
+  length: 1
+  type: U16
+  writable: false
+  mqtt: config_raw_25015
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:code-braces
+
+"25016":
+  name: Config register 25016
+  length: 1
+  type: U16
+  writable: false
+  mqtt: config_raw_25016
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:code-braces
+
+"25020":
+  name: Shadow scan
+  length: 1
+  type: U16
+  writable: false
+  decoder: shadow_scan
+  mqtt: shadow_scan
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:weather-partly-cloudy
+  hass_json_attributes: true
+
+"50001":
+  name: EPS backup switch
+  length: 1
+  type: U16
+  writable: false
+  mqtt: eps_backup_switch
+  group: config
+  hass_component_type: binary_sensor
+  hass_payload_on: "1"
+  hass_payload_off: "0"
+  hass_entity_category: diagnostic
+  hass_icon: mdi:power-plug-battery-outline
+
+"50002":
+  name: Config register 50002
+  length: 1
+  type: U16
+  writable: false
+  mqtt: config_raw_50002
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:code-braces
+
+"50003":
+  name: Config register 50003
+  length: 1
+  type: U16
+  writable: false
+  mqtt: config_raw_50003
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:code-braces
+
+"50004":
+  name: Off-grid voltage setting
+  length: 1
+  type: U16
+  unit: V
+  scale: 10
+  writable: false
+  mqtt: off_grid_voltage_setting
+  group: config
+  hass_component_type: sensor
+  hass_device_class: voltage
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+
+"50005":
+  name: Off-grid frequency setting
+  length: 1
+  type: U16
+  unit: Hz
+  scale: 100
+  writable: false
+  mqtt: off_grid_frequency_setting
+  group: config
+  hass_component_type: sensor
+  hass_device_class: frequency
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(2) }}"
+  hass_entity_category: diagnostic
+
+"50006":
+  name: Off-grid asymmetric output switch
+  length: 1
+  type: U16
+  writable: false
+  mqtt: off_grid_asymmetric_switch
+  group: config
+  hass_component_type: binary_sensor
+  hass_payload_on: "1"
+  hass_payload_off: "0"
+  hass_entity_category: diagnostic
+  hass_icon: mdi:scale-unbalanced
+
+"50007":
+  name: Peak shaving switch
+  length: 1
+  type: U16
+  writable: false
+  mqtt: peak_shaving_switch
+  group: config
+  hass_component_type: binary_sensor
+  hass_payload_on: "1"
+  hass_payload_off: "0"
+  hass_entity_category: diagnostic
+  hass_icon: mdi:chart-bell-curve-cumulative
+
+"50008":
+  name: Config register 50008
+  length: 1
+  type: U16
+  writable: false
+  mqtt: config_raw_50008
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:code-braces
+
+"50009":
+  name: Max grid power setting
+  length: 1
+  type: U16
+  unit: kVA
+  scale: 10
+  writable: false
+  mqtt: max_grid_power_setting
+  group: config
+  hass_component_type: sensor
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+  hass_icon: mdi:transmission-tower-import
+
+"50010":
+  name: Config register 50010
+  length: 1
+  type: U16
+  writable: false
+  mqtt: config_raw_50010
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:code-braces
+
+"50011":
+  name: Config register 50011
+  length: 1
+  type: U16
+  writable: false
+  mqtt: config_raw_50011
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:code-braces
+
+"50202":
+  name: EMS AC power scheduling mode
+  length: 1
+  type: U16
+  writable: false
+  decoder: enum_u16
+  enum_map:
+    0: "Off"
+    1: "Total Power Setting"
+    2: "Per-Phase Power Setting"
+  mqtt: ems_ac_power_mode
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:calendar-clock
+  hass_json_attributes: true
+
+"50203":
+  name: EMS total AC power setting
+  length: 1
+  type: I16
+  unit: kW
+  scale: 100
+  writable: false
+  mqtt: ems_total_ac_power_setting
+  group: config
+  hass_component_type: sensor
+  hass_device_class: power
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(2) }}"
+  hass_entity_category: diagnostic
+
+"50204":
+  name: EMS phase A power setting
+  length: 1
+  type: I16
+  unit: kW
+  scale: 100
+  writable: false
+  mqtt: ems_phase_a_power_setting
+  group: config
+  hass_component_type: sensor
+  hass_device_class: power
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(2) }}"
+  hass_entity_category: diagnostic
+
+"50205":
+  name: EMS phase B power setting
+  length: 1
+  type: I16
+  unit: kW
+  scale: 100
+  writable: false
+  mqtt: ems_phase_b_power_setting
+  group: config
+  hass_component_type: sensor
+  hass_device_class: power
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(2) }}"
+  hass_entity_category: diagnostic
+
+"50206":
+  name: EMS phase C power setting
+  length: 1
+  type: I16
+  unit: kW
+  scale: 100
+  writable: false
+  mqtt: ems_phase_c_power_setting
+  group: config
+  hass_component_type: sensor
+  hass_device_class: power
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(2) }}"
+  hass_entity_category: diagnostic
+
+"50207":
+  name: EMS battery power setting
+  length: 1
+  type: I16
+  unit: kW
+  scale: 100
+  writable: false
+  mqtt: ems_battery_power_setting
+  group: config
+  hass_component_type: sensor
+  hass_device_class: power
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(2) }}"
+  hass_entity_category: diagnostic
+
+"50208":
+  name: EMS max AC power limit
+  length: 1
+  type: I16
+  unit: kW
+  scale: 100
+  writable: false
+  mqtt: ems_max_ac_power_limit
+  group: config
+  hass_component_type: sensor
+  hass_device_class: power
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(2) }}"
+  hass_entity_category: diagnostic
+
+"50209":
+  name: EMS min AC power limit
+  length: 1
+  type: I16
+  unit: kW
+  scale: 100
+  writable: false
+  mqtt: ems_min_ac_power_limit
+  group: config
+  hass_component_type: sensor
+  hass_device_class: power
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(2) }}"
+  hass_entity_category: diagnostic
+
+"50210":
+  name: EMS priority power output
+  length: 1
+  type: U16
+  writable: false
+  decoder: enum_u16
+  enum_map:
+    0: "PV"
+    1: "Battery"
+  mqtt: ems_priority_power_output
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:priority-high
+  hass_json_attributes: true
+
+"52500":
+  name: Battery configuration brand
+  length: 1
+  type: U16
+  writable: false
+  decoder: battery_type
+  mqtt: battery_config_brand
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:battery-settings
+  hass_json_attributes: true
+
+"52501":
+  name: Battery configuration protocol
+  length: 1
+  type: U16
+  writable: false
+  mqtt: battery_config_protocol
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:protocol
+
+"52600":
+  name: Battery charge voltage limit config
+  length: 1
+  type: U16
+  writable: false
+  mqtt: battery_charge_voltage_limit_cfg
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:flash
+
+"52601":
+  name: Battery charge current limit
+  length: 1
+  type: U16
+  unit: A
+  scale: 10
+  writable: false
+  mqtt: battery_charge_current_limit
+  group: config
+  hass_component_type: sensor
+  hass_device_class: current
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+
+"52602":
+  name: Battery discharge voltage limit config
+  length: 1
+  type: U16
+  writable: false
+  mqtt: battery_discharge_voltage_limit_cfg
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:flash-outline
+
+"52603":
+  name: Battery discharge current limit
+  length: 1
+  type: U16
+  unit: A
+  scale: 10
+  writable: false
+  mqtt: battery_discharge_current_limit
+  group: config
+  hass_component_type: sensor
+  hass_device_class: current
+  hass_state_class: measurement
+  hass_value_template: "{{ value | round(1) }}"
+  hass_entity_category: diagnostic
+
+"53006":
+  name: Charge/discharge schedule
+  length: 43
+  type: CUSTOM
+  writable: false
+  decoder: schedule_summary
+  mqtt: schedule_summary
+  group: config
+  hass_component_type: sensor
+  hass_entity_category: diagnostic
+  hass_icon: mdi:calendar-clock
+  hass_json_attributes: true
