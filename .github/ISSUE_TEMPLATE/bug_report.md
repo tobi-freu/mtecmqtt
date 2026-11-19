@@ -1,29 +1,20 @@
 ---
 name: Fehlerbericht (Bug Report)
-about: Melde ein Problem mit der MTECmqtt Bridge App oder der Modbus-Registerdekodierung
+about: Problem mit der MTECmqtt Bridge App melden
 title: "[Bug]: "
 labels: bug
 ---
 
 ## Umgebung
-- **Home Assistant Core / OS / Supervisor Version:**
-- **MTECmqtt Bridge App Version:** (z. B. `3.1.0`)
-- **Wechselrichter-Modell & Firmware:** (z. B. `Energy Butler 20kW-3P-3G40`, `V1.0.0.1-27.53.5.0`)
-- **Modbus-Verbindung:** (WLAN-Dongle / LAN / Port `502` / Slave `252`)
+- **Home Assistant Version:**
+- **App-Version:** (z. B. `3.1.2`)
+- **Wechselrichter & Firmware:** (z. B. `Energy Butler 20kW-3P-3G40`, `V1.0.0.1-27.53.5.0`)
+- **Modbus:** (WLAN/LAN, Port `502`, Slave `252`)
 
-## Beschreibung des Problems
-Beschreibe kurz, was passiert ist.
+## Problem & erwartetes Verhalten
+Kurz beschreiben, was passiert ist und was erwartet wurde.
 
-## Erwartetes Verhalten
-Was hätte passieren sollen?
-
-## App-Konfiguration (ohne Passwörter!)
-```yaml
-# MODBUS_TIMEOUT, MODBUS_CLOSE_AFTER_CYCLE, REFRESH_NOW, etc.
-```
-
-## App-Protokoll (Logs)
-Bitte möglichst mit `DEBUG: true` erfassen und Passwörter schwärzen:
+## Konfiguration & Logs (ohne Passwörter, idealerweise `DEBUG: true`)
 ```text
-(Hier Logs einfügen)
+(Hier Konfiguration/Logs einfügen)
 ```
