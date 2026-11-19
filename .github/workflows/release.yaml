@@ -1,0 +1,66 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  release:
+    name: Build & Push Multi-Arch Image to GHCR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Extract version & image metadata
+        id: meta
+        run: |
+          pip install pyyaml
+          VERSION=$(python3 -c "import yaml; print(yaml.safe_load(open('mtecmqtt/config.yaml', encoding='utf-8'))['version'])")
+          OWNER_LC=$(printf '%s' "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          TAG_RAW="${{ github.event.release.tag_name }}"
+          if [ -n "$TAG_RAW" ]; then
+            TAG_NORM="${TAG_RAW#v}"
+            if [ "$TAG_NORM" != "$VERSION" ]; then
+              echo "Release tag ($TAG_RAW) does not match mtecmqtt/config.yaml version ($VERSION)" >&2
+              exit 1
+            fi
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "image=ghcr.io/${OWNER_LC}/mtecmqtt" >> "$GITHUB_OUTPUT"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push multi-arch container image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./mtecmqtt
+          file: ./mtecmqtt/Dockerfile
+          platforms: linux/amd64,linux/aarch64
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.version }}
+            ${{ steps.meta.outputs.image }}:latest
+          labels: |
+            org.opencontainers.image.version=${{ steps.meta.outputs.version }}

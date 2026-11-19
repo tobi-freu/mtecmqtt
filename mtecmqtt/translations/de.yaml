@@ -1,0 +1,65 @@
+configuration:
+  modbus:
+    name: "Modbus-Verbindung"
+    description: "Verbindungsparameter für den M-TEC Energy Butler über Modbus RTU-over-TCP."
+    fields:
+      MODBUS_IP:
+        name: "Modbus IP-Adresse"
+        description: "Lokale IP-Adresse oder Hostname des Wechselrichter-WLAN-/LAN-Dongles."
+      MODBUS_PORT:
+        name: "Modbus Port"
+        description: "TCP-Port des Modbus-RTU-over-TCP-Dongles (Standard: 502)."
+      MODBUS_SLAVE:
+        name: "Modbus Slave-ID"
+        description: "Modbus Slave-Adresse des Wechselrichters (bei M-TEC typischerweise 252)."
+      MODBUS_TIMEOUT:
+        name: "Modbus Timeout (s)"
+        description: "Maximale Wartezeit pro Modbus-Anfrage in Sekunden (3–30)."
+      MODBUS_RETRIES:
+        name: "Modbus Wiederholungen"
+        description: "Anzahl der PyModbus-Wiederholungsversuche pro Anfrage (0–5)."
+      MODBUS_CLOSE_AFTER_CYCLE:
+        name: "Verbindung nach Zyklus schließen"
+        description: "Empfohlen: Schließt die TCP-Verbindung nach jedem Abfragezyklus sauber, um Half-Open Sockets auf dem WLAN-Dongle zu verhindern."
+  mqtt:
+    name: "MQTT-Broker"
+    description: "Zugangsdaten für den Home Assistant MQTT-Broker."
+    fields:
+      MQTT_SERVER:
+        name: "MQTT Server"
+        description: "Hostname oder IP-Adresse des MQTT-Brokers (z. B. core-mosquitto)."
+      MQTT_PORT:
+        name: "MQTT Port"
+        description: "TCP-Port des MQTT-Brokers (Standard: 1883)."
+      MQTT_LOGIN:
+        name: "MQTT Benutzername"
+        description: "Benutzername zur Authentifizierung am MQTT-Broker."
+      MQTT_PASSWORD:
+        name: "MQTT Passwort"
+        description: "Passwort zur Authentifizierung am MQTT-Broker."
+  refresh:
+    name: "Abfrageintervalle"
+    description: "Steuert die Abfragefrequenzen der verschiedenen Registergruppen."
+    fields:
+      REFRESH_NOW:
+        name: "Echtzeit-Intervall (s)"
+        description: "Zykluszeit in Sekunden für die Basisgruppe now-base (10–300)."
+      REFRESH_ALL_NOW_GROUPS:
+        name: "Alle now-Untergruppen in jedem Zyklus abfragen"
+        description: "Wenn aktiv, werden in jedem Zyklus alle erweiterten Echtzeitgruppen (Grid, Inverter, Backup, Batterie, PV) abgefragt statt per Round-Robin."
+      REFRESH_DAY:
+        name: "Tageswerte-Intervall (s)"
+        description: "Abfrageintervall in Sekunden für die Tages-Energiezähler (60–3600)."
+      REFRESH_TOTAL:
+        name: "Gesamtwerte-Intervall (s)"
+        description: "Abfrageintervall in Sekunden für die Gesamt-Energiezähler (300–86400)."
+      REFRESH_CONFIG:
+        name: "Konfigurations-Intervall (s)"
+        description: "Abfrageintervall in Sekunden für Firmware-, Schutz-, Batterie- und Zeitplan-Register (300–86400)."
+  advanced:
+    name: "Erweiterte Optionen"
+    description: "Diagnose- und Protokollierungsoptionen."
+    fields:
+      DEBUG:
+        name: "Debug-Logging"
+        description: "Aktiviert detaillierte Debug-Ausgaben (Cluster-Abfragen, Sentinel-Filter, MQTT-Payloads) im App-Protokoll."

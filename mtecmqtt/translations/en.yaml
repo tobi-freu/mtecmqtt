@@ -1,0 +1,65 @@
+configuration:
+  modbus:
+    name: "Modbus Connection"
+    description: "Connection settings for the M-TEC Energy Butler via Modbus RTU-over-TCP."
+    fields:
+      MODBUS_IP:
+        name: "Modbus IP Address"
+        description: "Local IP address or hostname of the inverter Wi-Fi/LAN dongle."
+      MODBUS_PORT:
+        name: "Modbus Port"
+        description: "TCP port of the Modbus RTU-over-TCP dongle (default: 502)."
+      MODBUS_SLAVE:
+        name: "Modbus Slave ID"
+        description: "Modbus slave address of the inverter (typically 252 for M-TEC)."
+      MODBUS_TIMEOUT:
+        name: "Modbus Timeout (s)"
+        description: "Socket timeout per Modbus request in seconds (3–30)."
+      MODBUS_RETRIES:
+        name: "Modbus Retries"
+        description: "Number of PyModbus retry attempts per request (0–5)."
+      MODBUS_CLOSE_AFTER_CYCLE:
+        name: "Close Connection After Cycle"
+        description: "Recommended: cleanly closes the TCP socket after every polling cycle to prevent half-open sockets on the Wi-Fi dongle."
+  mqtt:
+    name: "MQTT Broker"
+    description: "Connection credentials for the Home Assistant MQTT broker."
+    fields:
+      MQTT_SERVER:
+        name: "MQTT Server"
+        description: "Hostname or IP address of the MQTT broker (e.g. core-mosquitto)."
+      MQTT_PORT:
+        name: "MQTT Port"
+        description: "TCP port of the MQTT broker (default: 1883)."
+      MQTT_LOGIN:
+        name: "MQTT Username"
+        description: "Username for authenticating with the MQTT broker."
+      MQTT_PASSWORD:
+        name: "MQTT Password"
+        description: "Password for authenticating with the MQTT broker."
+  refresh:
+    name: "Refresh Intervals"
+    description: "Polling intervals for the different Modbus register groups."
+    fields:
+      REFRESH_NOW:
+        name: "Real-Time Interval (s)"
+        description: "Polling cycle interval in seconds for the now-base register group (10–300)."
+      REFRESH_ALL_NOW_GROUPS:
+        name: "Poll All Real-Time Subgroups Each Cycle"
+        description: "When enabled, reads all extended real-time groups (grid, inverter, backup, battery, PV) every cycle instead of round-robin."
+      REFRESH_DAY:
+        name: "Daily Energy Interval (s)"
+        description: "Polling interval in seconds for daily energy counters (60–3600)."
+      REFRESH_TOTAL:
+        name: "Total Energy Interval (s)"
+        description: "Polling interval in seconds for lifetime energy counters (300–86400)."
+      REFRESH_CONFIG:
+        name: "Configuration Interval (s)"
+        description: "Polling interval in seconds for firmware, protection, battery metadata, and schedule registers (300–86400)."
+  advanced:
+    name: "Advanced"
+    description: "Diagnostic and logging options."
+    fields:
+      DEBUG:
+        name: "Debug Logging"
+        description: "Enables verbose debug logging (cluster reads, sentinel filtering, MQTT publishes) in the app logs."

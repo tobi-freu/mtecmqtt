@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint & Config Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Home Assistant App Linter
+        uses: frenck/action-app-linter@v2
+        with:
+          path: "./mtecmqtt"
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PyYAML for validation
+        run: pip install pyyaml
+
+      - name: Validate YAML, Translations & Python Syntax
+        run: |
+          python3 - <<'EOF'
+          import py_compile
+          import yaml
+
+          yaml_files = [
+              "repository.yaml",
+              "mtecmqtt/config.yaml",
+              "mtecmqtt/registers_extended.yaml",
+              "mtecmqtt/translations/de.yaml",
+              "mtecmqtt/translations/en.yaml",
+          ]
+          parsed = {}
+          for path in yaml_files:
+              with open(path, "r", encoding="utf-8") as fh:
+                  parsed[path] = yaml.safe_load(fh)
+              assert isinstance(parsed[path], dict) and parsed[path], f"Invalid YAML in {path}"
+
+          cfg_options = parsed["mtecmqtt/config.yaml"]["options"]
+          for lang_file in ("mtecmqtt/translations/de.yaml", "mtecmqtt/translations/en.yaml"):
+              tr_cfg = parsed[lang_file]["configuration"]
+              assert set(tr_cfg.keys()) == set(cfg_options.keys()), f"Group mismatch in {lang_file}"
+              for grp, fields in cfg_options.items():
+                  tr_fields = tr_cfg[grp]["fields"]
+                  assert set(tr_fields.keys()) == set(fields.keys()), f"Field mismatch in {lang_file} [{grp}]"
+
+          py_compile.compile("mtecmqtt/mtec_runner.py", doraise=True)
+          print("All YAML, translation, and Python syntax checks passed.")
+          EOF
+
+  build-test:
+    name: Multi-Arch Build & Self-Test
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build multi-arch container & run --self-test
+        uses: docker/build-push-action@v6
+        with:
+          context: ./mtecmqtt
+          file: ./mtecmqtt/Dockerfile
+          platforms: linux/amd64,linux/aarch64
+          push: false
