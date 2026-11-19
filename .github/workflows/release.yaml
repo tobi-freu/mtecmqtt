@@ -53,7 +53,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build & push multi-arch container image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./mtecmqtt
           file: ./mtecmqtt/Dockerfile
